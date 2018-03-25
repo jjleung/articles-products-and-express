@@ -3,6 +3,7 @@ class DS_Articles {
     this.storage = [];
     this.idNum = 1;
     this.initArticles();
+    this.getAllArticles();
   }
   initArticles() {
     this.storage.push({
@@ -25,7 +26,7 @@ class DS_Articles {
     let result;
     this.storage.forEach(art => {
       if (art.id === id) {
-        result = town;
+        result = art;
       }
     });
     return result;

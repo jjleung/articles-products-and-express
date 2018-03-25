@@ -25,7 +25,7 @@ class DS_Products {
     let result;
     this.storage.forEach(prod => {
       if (prod.id === id) {
-        result = town;
+        result = prod;
       }
     });
     return result;

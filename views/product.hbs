@@ -1,10 +1,20 @@
 <h1>Produfeufoiefnwoinct</h1>
 <ul>
-    {{#each prod}}
+    {{#each products}}
     <li>
-        <a href="/products/{{id}}">{{name}}</a>ls</li>
+        <a href="/products/{{id}}">{{name}}</a>
+    </li>
     {{/each}}
 </ul>
+
+<form action="./db/DS_Products.js" method="post">
+    Name:
+    <input type="text" name="p_name">
+    <br> Description:
+    <input type="text" name="p_desc">
+    <br>
+    <input type="submit" value="Add">
+</form>
 
 
 {{> footer}}

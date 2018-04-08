@@ -1,47 +1,42 @@
 class DS_Articles {
   constructor() {
-    this.storage = [];
-    this.idNum = 1;
-    this.initArticles();
-    this.getAllArticles();
+    this._storage = [];
+    this._id = 1;
   }
-  initArticles() {
-    this.storage.push({
-      id: this.idNum,
-      name: "Article 1",
-      desc: "something something squids"
-    });
-    this.idNum++;
-    this.storage.push({
-      id: this.idNum,
-      name: "Article 2",
-      desc: "the Dark Side"
-    });
-    this.idNum++;
-  }
+
   getAllArticles() {
-    return this.storage.slice();
+    return this._storage;
   }
-  getArticleById(id) {
-    let result;
-    this.storage.forEach(art => {
-      if (art.id === id) {
-        result = art;
-      }
+
+  getId() {
+    return this._id;
+  }
+
+  addArticle(title, content, author) {
+    this._storage.push({
+      id: this._id,
+      title,
+      content,
+      author
     });
-    return result;
+    this._id++;
   }
-  createArticle(name, desc) {
-    this.storage.push({ id: this.idNum, name, desc });
-    this.idNum++;
+
+  updateArticle(title, content, author) {
+    const articleToUpdate = this._storage.filter(obj => obj.title === title);
+    const index = this._storage.map(obj => obj.title);
+    articleToUpdate[0].title = title;
+    articleToUpdate[0].content = content;
+    articleToUpdate[0].author = author;
+    this._storage.splice(index, 1, articleToUpdate[0]);
   }
-  deleteArticleById(id) {
-    this.storage.slice().forEach((art, idx) => {
-      if (art.id === id) {
-        this.storage.splice(idx, 1);
-      }
-    });
+
+  deleteArticle(title) {
+    const index = this._storage.map(obj => obj.title).indexOf(title);
+    this._storage.splice(index, 1);
   }
 }
 
-module.exports = new DS_Articles();
+module.exports = {
+  ArticleList
+};

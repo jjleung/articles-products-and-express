@@ -1,1 +1,33 @@
-<h1>edididiti</h1>
+{{#if product}}
+<h1>Edit Me</h1>
+
+<form action="/products/{{id}}/edit" method="post" enctype="application/x-www-form-urlencoded">
+    <input type="hidden" name="_method" value="PUT"> Name:
+    <br>
+    <input type="text" name="name" value="{{name}}">
+    <br> Price:
+    <br>
+    <input type="text" name="price" value="{{price}}">
+    <br> Inventory:
+    <br>
+    <input type="text" name="inventory" value="{{inventory}}">
+    <br>
+    <button>Submit</button>
+</form>
+{{/if}} {{#if article}}
+<h1>Edit Me</h1>
+
+<form action="/articles/{{title}}/edit" method="post" enctype="application/x-www-form-urlencoded">
+    <input type="hidden" name="_method" value="PUT"> Title:
+    <br>
+    <input type="text" name="title" value="{{title}}">
+    <br> Content:
+    <br>
+    <input type="text" name="content" value="{{content}}">
+    <br> Author:
+    <br>
+    <input type="text" name="author" value="{{author}}">
+    <br>
+    <button>Submit</button>
+</form>
+{{/if}}

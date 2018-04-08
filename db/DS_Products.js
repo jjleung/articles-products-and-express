@@ -1,46 +1,50 @@
 class DS_Products {
   constructor() {
-    this.storage = [];
-    this.idNum = 1;
-    this.initProducts();
+    this._storage = [];
+    this._id = 1;
   }
-  initProducts() {
-    this.storage.push({
-      id: this.idNum,
-      name: "Product 1",
-      desc: "cookies"
-    });
-    this.idNum++;
-    this.storage.push({
-      id: this.idNum,
-      name: "Product 2",
-      desc: "melk"
-    });
-    this.idNum++;
-  }
+
   getAllProducts() {
-    return this.storage.slice();
+    return this._storage;
   }
-  getProductById(id) {
-    let result;
-    this.storage.forEach(prod => {
-      if (prod.id === id) {
-        result = prod;
-      }
+
+  getId() {
+    return this._id;
+  }
+
+  addProduct(name, price, inventory) {
+    const currID = this._id;
+    this._storage.push({
+      id: this._id,
+      name,
+      price,
+      inventory
     });
-    return result;
+    this._id++;
   }
-  createProduct(name, desc) {
-    this.storage.push({ id: this.idNum, name, desc });
-    this.idNum++;
-  }
-  deleteProductById(id) {
-    this.storage.slice().forEach((prod, idx) => {
-      if (prod.id === id) {
-        this.storage.splice(idx, 1);
-      }
+
+  updateProduct(id, name, price, inventory) {
+    let productToUpdate = this._storage.filter(obj => {
+      return obj.id === id;
     });
+    const index = this._storage
+      .map(obj => {
+        return obj.id;
+      })
+      .indexOf(id);
+    productToUpdate[0].name = name;
+    productToUpdate[0].price = price;
+    productToUpdate[0].inventory = inventory;
+    console.log("productToUpdate[0]", productToUpdate[0]);
+    this._storage.splice(index, 1, productToUpdate[0]);
+  }
+
+  deleteProduct(id) {
+    const index = this._storage.map(obj => obj.id).indexOf(id);
+    this._storage.splice(index, 1);
   }
 }
 
-module.exports = new DS_Products();
+module.exports = {
+  ProductList
+};

@@ -1,55 +1,34 @@
 const express = require("express");
+const app = express();
 const bodyParser = require("body-parser");
-const hbs = require("express-handlebars");
-const DS_Articles = require("./db/DS_Articles.js");
-const DS_Products = require("./db/DS_Products.js");
-const server = express();
-const PORT = 8080;
+const exphbs = require("express-handlebars");
+const methodOverride = require("method-override");
+const handlebars = exphbs.create({
+  defaultLayout: "main",
+  extname: ".hbs"
+});
+const products = require("./routes/products");
+const articles = require("./routes/articles");
 
-server.use(bodyParser.urlencoded({ extended: true }));
+const PORT = process.env.PORT || 8080;
 
-server.engine(
-  "hbs",
-  hbs({
-    defaultLayout: "main",
-    extname: ".hbs"
+app.engine(".hbs", handlebars.engine);
+app.set("view engine", ".hbs");
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(
+  methodOverride((req, res) => {
+    if (req.body && typeof req.body === "object" && "_method" in req.body) {
+      const method = req.body._method;
+      delete req.body._method;
+      return method;
+    }
   })
 );
+app.use(products);
+app.use(articles);
 
-server.set("view engine", "hbs");
-
-server.get("/", (req, res) => {
-  res.render("home", { hello: "test /" });
-});
-
-server.get("/articles", (req, res) => {
-  const articles = DS_Articles.getAllArticles();
-  res.render("article", { articles });
-});
-
-server.get("/products", (req, res) => {
-  const products = DS_Products.getAllProducts();
-  res.render("product", { products });
-});
-
-server.get("/articles/:id", (req, res) => {
-  const artId = Number(req.params.id);
-  const art = DS_Articles.getArticleById(artId);
-
-  res.render("article_detail", art);
-});
-
-server.get("/products/:id", (req, res) => {
-  const prodId = Number(req.params.id);
-  const prod = DS_Products.getProductById(prodId);
-
-  res.render("product_detail", prod);
-});
-
-server.post("/articles", (req, res) => {
-  const nameData = req.body.a_name;
-});
-
-server.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server listening on port: ${PORT}`);
 });

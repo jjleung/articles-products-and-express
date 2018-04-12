@@ -1,11 +1,13 @@
-<h1>Arictoioicls</h1>
-<ul>
-    {{#each articles}}
-    <li>
-        <a href="/articles/{{id}}">{{name}}</a>
-    </li>
-    {{/each}}
-</ul>
+<h1>
+    {{title}}</h1>
+<h2>By: {{author}}</h2>
 
-
-{{> footer}}
+<p>{{content}}</p>
+<a href="/articles/{{title}}/edit">Edit</a>
+<a href="/articles/new">New Article</a>
+<a href="/articles">All Articles</a>
+<form action="/articles/{{title}}" method="post" enctype="application/x-www-form-urlencoded">
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">DELETE</button>
+</form>
+<a href="/">Home</a>

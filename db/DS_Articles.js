@@ -1,47 +1,63 @@
-class DS_Articles {
-  constructor() {
-    this.storage = [];
-    this.idNum = 1;
-    this.initArticles();
-    this.getAllArticles();
+const knex = require("knex")({
+  client: "pg",
+  connection: {
+    host: "127.0.0.1",
+    user: "ap_user",
+    password: "password",
+    database: "ap_db"
   }
-  initArticles() {
-    this.storage.push({
-      id: this.idNum,
-      name: "Article 1",
-      desc: "something something squids"
-    });
-    this.idNum++;
-    this.storage.push({
-      id: this.idNum,
-      name: "Article 2",
-      desc: "the Dark Side"
-    });
-    this.idNum++;
-  }
-  getAllArticles() {
-    return this.storage.slice();
-  }
-  getArticleById(id) {
-    let result;
-    this.storage.forEach(art => {
-      if (art.id === id) {
-        result = art;
-      }
-    });
-    return result;
-  }
-  createArticle(name, desc) {
-    this.storage.push({ id: this.idNum, name, desc });
-    this.idNum++;
-  }
-  deleteArticleById(id) {
-    this.storage.slice().forEach((art, idx) => {
-      if (art.id === id) {
-        this.storage.splice(idx, 1);
-      }
-    });
-  }
-}
+});
 
-module.exports = new DS_Articles();
+const getAllArticles = () => {
+  return knex
+    .select()
+    .from("article")
+    .orderBy("article_id", "asc")
+    .then(data => {
+      return data;
+    });
+};
+
+const getArticleByTitle = title => {
+  return knex
+    .select()
+    .from("article")
+    .where({
+      article_title: title
+    })
+    .then(article => {
+      return article[0];
+    });
+};
+
+const addArticle = (title, content, author) => {
+  return knex("article").insert({
+    article_title: title,
+    article_content: content,
+    article_author: author
+  });
+};
+
+const updateArticle = (id, title, content, author) => {
+  return knex("article")
+    .where("article_id", "=", id)
+    .update({
+      article_title: title,
+      article_content: content,
+      article_author: author
+    });
+};
+
+const deleteArticle = title => {
+  return knex("article")
+    .where("article_title", "=", title)
+    .del();
+};
+
+module.exports = {
+  getAllArticles,
+  addArticle,
+  getArticleByTitle,
+  updateArticle,
+  deleteArticle
+};

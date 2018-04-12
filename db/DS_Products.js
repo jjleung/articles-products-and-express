@@ -1,46 +1,56 @@
-class DS_Products {
-  constructor() {
-    this.storage = [];
-    this.idNum = 1;
-    this.initProducts();
+const knex = require("knex")({
+  client: "pg",
+  connection: {
+    host: "127.0.0.1",
+    user: "ap_user",
+    password: "password",
+    database: "ap_db"
   }
-  initProducts() {
-    this.storage.push({
-      id: this.idNum,
-      name: "Product 1",
-      desc: "cookies"
-    });
-    this.idNum++;
-    this.storage.push({
-      id: this.idNum,
-      name: "Product 2",
-      desc: "melk"
-    });
-    this.idNum++;
-  }
-  getAllProducts() {
-    return this.storage.slice();
-  }
-  getProductById(id) {
-    let result;
-    this.storage.forEach(prod => {
-      if (prod.id === id) {
-        result = prod;
-      }
-    });
-    return result;
-  }
-  createProduct(name, desc) {
-    this.storage.push({ id: this.idNum, name, desc });
-    this.idNum++;
-  }
-  deleteProductById(id) {
-    this.storage.slice().forEach((prod, idx) => {
-      if (prod.id === id) {
-        this.storage.splice(idx, 1);
-      }
-    });
-  }
-}
+});
 
-module.exports = new DS_Products();
+const getAllProducts = () => {
+  return knex
+    .raw("SELECT * FROM product ORDER BY product_id ASC")
+    .then(data => {
+      return data.rows;
+    });
+};
+
+const addProduct = (name, price, inventory) => {
+  return knex("product")
+    .returning("product_sku")
+    .insert({
+      product_name: name,
+      product_price: Number(price),
+      product_inventory: Number(inventory)
+    });
+};
+
+const updateProduct = (id, name, price, inventory) => {
+  return knex("product")
+    .where("product_sku", "=", id)
+    .update(
+      {
+        product_name: name,
+        product_price: Number(price),
+        product_inventory: Number(inventory)
+      },
+      "product_sku"
+    )
+    .then(sku => {
+      return sku[0];
+    });
+};
+
+const deleteProduct = id => {
+  return knex("product")
+    .where("product_sku", "=", id)
+    .del();
+};
+
+module.exports = {
+  getAllProducts,
+  addProduct,
+  updateProduct,
+  deleteProduct
+};

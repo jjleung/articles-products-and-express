@@ -1,3 +1,13 @@
+const knex = require("knex")({
+  client: "pg",
+  connection: {
+    host: "127.0.0.1",
+    user: "ap_user",
+    password: "password",
+    database: "ap_db"
+  }
+});
+
 class ArticleList {
   constructor() {
     this._storage = [];

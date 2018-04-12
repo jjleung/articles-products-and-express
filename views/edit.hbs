@@ -1,5 +1,5 @@
 {{#if product}}
-<h1>Edit Me</h1>
+<h1>Update</h1>
 
 <form action="/products/{{id}}/edit" method="post" enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="_method" value="PUT"> Name:
@@ -15,7 +15,7 @@
     <button>Submit</button>
 </form>
 {{/if}} {{#if article}}
-<h1>Edit Me</h1>
+<h1>Update</h1>
 
 <form action="/articles/{{title}}/edit" method="post" enctype="application/x-www-form-urlencoded">
     <input type="hidden" name="_method" value="PUT"> Title:

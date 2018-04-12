@@ -1,50 +1,56 @@
-class DS_Products {
-  constructor() {
-    this._storage = [];
-    this._id = 1;
+const knex = require("knex")({
+  client: "pg",
+  connection: {
+    host: "127.0.0.1",
+    user: "ap_user",
+    password: "password",
+    database: "ap_db"
   }
+});
 
-  getAllProducts() {
-    return this._storage;
-  }
-
-  getId() {
-    return this._id;
-  }
-
-  addProduct(name, price, inventory) {
-    const currID = this._id;
-    this._storage.push({
-      id: this._id,
-      name,
-      price,
-      inventory
+const getAllProducts = () => {
+  return knex
+    .raw("SELECT * FROM product ORDER BY product_id ASC")
+    .then(data => {
+      return data.rows;
     });
-    this._id++;
-  }
+};
 
-  updateProduct(id, name, price, inventory) {
-    let productToUpdate = this._storage.filter(obj => {
-      return obj.id === id;
+const addProduct = (name, price, inventory) => {
+  return knex("product")
+    .returning("product_sku")
+    .insert({
+      product_name: name,
+      product_price: Number(price),
+      product_inventory: Number(inventory)
     });
-    const index = this._storage
-      .map(obj => {
-        return obj.id;
-      })
-      .indexOf(id);
-    productToUpdate[0].name = name;
-    productToUpdate[0].price = price;
-    productToUpdate[0].inventory = inventory;
-    console.log("productToUpdate[0]", productToUpdate[0]);
-    this._storage.splice(index, 1, productToUpdate[0]);
-  }
+};
 
-  deleteProduct(id) {
-    const index = this._storage.map(obj => obj.id).indexOf(id);
-    this._storage.splice(index, 1);
-  }
-}
+const updateProduct = (id, name, price, inventory) => {
+  return knex("product")
+    .where("product_sku", "=", id)
+    .update(
+      {
+        product_name: name,
+        product_price: Number(price),
+        product_inventory: Number(inventory)
+      },
+      "product_sku"
+    )
+    .then(sku => {
+      return sku[0];
+    });
+};
+
+const deleteProduct = id => {
+  return knex("product")
+    .where("product_sku", "=", id)
+    .del();
+};
 
 module.exports = {
-  ProductList
+  getAllProducts,
+  addProduct,
+  updateProduct,
+  deleteProduct
 };
